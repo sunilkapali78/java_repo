@@ -33,13 +33,9 @@ public Boolean AddCustomer(Customer customer) throws SQLException
 }
 public List<Customer> GetCustomers(){
 	List<Customer> customers= new ArrayList<Customer>(); 
-	ResultSet rs;
+	
 	try {
-		rs = db.GetCustomers();
-		while(rs.next())
-		{
-			customers.add(new Customer(rs.getInt("id"), rs.getString("name"), rs.getString("password")));
-		}
+		customers=db.GetCustomers();
 		return customers;
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block

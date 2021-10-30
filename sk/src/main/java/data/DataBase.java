@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import domain.Customer;
 public class DataBase {
@@ -23,6 +25,7 @@ public Connection GetConnection()
 {
 	
 	try {
+	
 		
 	Class.forName(data.Config.DRIVER);
 	
@@ -43,6 +46,11 @@ public Connection GetConnection()
 }
 
 public Boolean AddCustomer(Customer customer) throws SQLException {
+	
+	if(connection.isClosed())
+	{
+	connection=	GetConnection();
+	}
 
 	String sql = "INSERT INTO login (name, password) VALUES (?, ?)";
 	 
@@ -62,23 +70,47 @@ public Boolean AddCustomer(Customer customer) throws SQLException {
 		
 		throw e;
 	}
+	finally {
+		connection.close();
+	}
 	return false;
 	
 }
-public ResultSet GetCustomers() throws SQLException {
+public List<Customer> GetCustomers() throws SQLException {
+
+	ResultSet rs=null;
+	if(connection.isClosed())
+	{
+	connection=	GetConnection();
+	}
 
 	String sql = "select * from login";
 	 
 	
 	try {
 		Statement s= connection.createStatement();
-		ResultSet rs= s.executeQuery(sql);
-		return rs;
-		 
+		rs= s.executeQuery(sql);
+		List<Customer> customers= new ArrayList<Customer>(); 	
+			
+			while(rs.next())
+			{
+				customers.add(new Customer(rs.getInt("id"), rs.getString("name"), rs.getString("password")));
+			}
+			return customers;
 		
 	} catch (SQLException e) {
 		
 		throw e;
+	}
+	finally {
+		if(rs!=null)
+		{
+			rs.close();
+		}
+		if(connection!=null)
+		{
+		connection.close();
+		}
 	}
 	
 }
