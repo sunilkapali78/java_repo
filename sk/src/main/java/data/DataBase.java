@@ -57,6 +57,7 @@ public Boolean AddCustomer(Customer customer) throws SQLException {
 	
 	try {
 		PreparedStatement statement = connection.prepareStatement(sql);
+		
 		statement.setString(1, customer.getName());
 		statement.setString(2, customer.getPassword());
 		
@@ -76,7 +77,7 @@ public Boolean AddCustomer(Customer customer) throws SQLException {
 	return false;
 	
 }
-public List<Customer> GetCustomers() throws SQLException {
+public List<Customer> GetCustomers() throws Exception {
 
 	ResultSet rs=null;
 	if(connection.isClosed())
@@ -90,15 +91,21 @@ public List<Customer> GetCustomers() throws SQLException {
 	try {
 		Statement s= connection.createStatement();
 		rs= s.executeQuery(sql);
+	
 		List<Customer> customers= new ArrayList<Customer>(); 	
 			
 			while(rs.next())
 			{
-				customers.add(new Customer(rs.getInt("id"), rs.getString("name"), rs.getString("password")));
+				Customer c= new Customer();
+				c.setId(rs.getInt("id"));
+				c.setName(rs.getString("name"));
+				c.setPassword(rs.getString("password"));				
+				customers.add(c);
+				//customers.add(new Customer(rs.getInt("id"), rs.getString("name"), rs.getString("password")));
 			}
 			return customers;
 		
-	} catch (SQLException e) {
+	} catch (Exception e) {
 		
 		throw e;
 	}
