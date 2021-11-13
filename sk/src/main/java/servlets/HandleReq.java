@@ -41,7 +41,8 @@ public class HandleReq extends HttpServlet {
 		try {
 			c.setName(request.getParameter("name"));
 			c.setPassword(request.getParameter("password"));
-		} catch (Exception e1) {
+		}
+		catch (Exception e1) {
 			response.getWriter().write(e1.getMessage());
 			return;
 		}
